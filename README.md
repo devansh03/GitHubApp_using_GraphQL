@@ -5,8 +5,10 @@ You can see our own starred repositories by, going to GitHub developer options a
 
 The app will look like this, 
 
-<img src='https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWorkingImage.png" width="200" height="400">
+
+
+<a href="url"><img src='https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWorkingImage.png" height="400" width="200"></a>
 
 When the username entered does not exist,
 
-<img src='https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWrongUsernameEnteredImage.png" width="200" height="400">
+<a href="url"><img src='https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWrongUsernameEnteredImage.png" height="400" width="200"></a>
