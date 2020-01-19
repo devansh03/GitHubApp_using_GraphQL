@@ -2,10 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
+Widget buildError(BuildContext context, FlutterErrorDetails error) {
+  return Scaffold(
+    backgroundColor: Colors.redAccent.shade100,
+    body: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView(
+        children: <Widget>[
+          Column(
+            children: <Widget>[
+              SizedBox(height: MediaQuery.of(context).size.height / 4,),
+              Image.asset("images/incorrect_username.jpg"),
+              SizedBox(height: 30.0),
+              Text("Please try a correct Username.",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0)),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 void main() => runApp(MaterialApp(
       title: "GitHub_using_GraphQL",
       debugShowCheckedModeBanner: false,
       home: MyApp(),
+      builder: (BuildContext context, Widget widget) {
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+          return buildError(context, errorDetails);
+        };
+        return widget;
+      },
     ));
 
 class MyApp extends StatefulWidget {
@@ -41,26 +69,68 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  final TextEditingController _nameController = new TextEditingController();
+  final TextEditingController nameController = new TextEditingController();
   String name = "devansh03";
-  String readRepositories;
 
   @override
-  void initState() {
-    super.initState();
-    _nameController.text = "";
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    nameController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_nameController.toString().isNotEmpty){
-      name = _nameController.toString();
-    }
-
-    readRepositories = """
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "GitHub",
+            style: TextStyle(fontSize: 26.0, fontWeight: FontWeight.w500),
+          ),
+          backgroundColor: Colors.black,
+          centerTitle: false,
+          actions: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                width: 175.0,
+                color: Colors.tealAccent.shade100,
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: TextField(
+                    autocorrect: false,
+                    decoration: InputDecoration(
+                        fillColor: Colors.white,
+                        labelText: "Enter UserName",
+                        border: OutlineInputBorder(
+                            gapPadding: 3.3,
+                            borderRadius: BorderRadius.circular(3.3))),
+                    controller: nameController,
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+                icon: Icon(Icons.search),
+                onPressed: () {
+                  setState(() {
+                    name = nameController.text;
+                    MyHomePage();
+                  });
+//              Navigator.pushReplacement(
+//                  context,
+//                  MaterialPageRoute(builder: (_) => MyHomePage()))
+//                  .then((_) => MyHomePage());
+                })
+          ],
+        ),
+        body: Query(
+          options: QueryOptions(
+            // ignore: deprecated_member_use
+            document: """
     query Flutter_Github_GraphQL{
-            user(login: "devansh03") {
+            user(login: "$name") {
                 avatarUrl(size: 200)
                 location
                 name
@@ -89,56 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
               }
             }
           }
-      """ ;
-
-
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("GitHub",style: TextStyle(fontSize: 21.0, fontWeight: FontWeight.w500),),
-
-          backgroundColor: Colors.black,
-          centerTitle: false,
-          actions: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                width: 150.0,
-                color: Colors.tealAccent.shade100,
-                child: Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      fillColor: Colors.white,
-                      labelText: "Enter UserName",
-                      border: OutlineInputBorder(
-                        gapPadding: 3.3,
-                        borderRadius: BorderRadius.circular(3.3)
-                      )
-                    ),
-                    controller: _nameController,
-                  ),
-                ),
-              ),
-            ),
-            IconButton(icon: Icon(Icons.search), onPressed: (){
-              setState(() {
-                  name = _nameController.toString();
-                  MyHomePage();
-              });
-//              Navigator.pushReplacement(
-//                  context,
-//                  MaterialPageRoute(builder: (_) => MyHomePage()))
-//                  .then((_) => MyHomePage());
-            })
-          ],
-        ),
-        body: Query(
-          options: QueryOptions(
-            // ignore: deprecated_member_use
-            document: readRepositories,
+      """,
             variables: {
-              'name': "devansh03",
+              'name': name,
             },
           ),
           builder: (QueryResult result,
@@ -146,10 +169,10 @@ class _MyHomePageState extends State<MyHomePage> {
             if (result.hasException == null) {
               return Center(
                   child: Text(
-                    result.hasException.toString(),
-                    style: TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ));
+                result.hasException.toString(),
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ));
             }
 
 //            if (result.noSuchMethod() != null){
@@ -163,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> {
             // it can be either Map or List
             final userDetails = result.data['user'];
             List starredRepositories =
-            result.data['viewer']['starredRepositories']['edges'];
+                result.data['viewer']['starredRepositories']['edges'];
 
             return Stack(
               children: <Widget>[
@@ -280,7 +303,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             height: 15,
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 10.0, right: 10),
+                            padding:
+                                const EdgeInsets.only(left: 10.0, right: 10),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -352,11 +376,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     Padding(
                       padding:
-                      const EdgeInsets.only(top: 10.0, bottom: 2, left: 10),
+                          const EdgeInsets.only(top: 10.0, bottom: 2, left: 10),
                       child: Text(
                         "devansh03's Starred Repositories",
-                        style:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Divider(),
@@ -370,8 +394,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       final repository = starredRepositories[index];
                       return SingleChildScrollView(
                         child: Padding(
-                          padding:
-                          const EdgeInsets.only(left: 10.0, top: 8, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              left: 10.0, top: 8, bottom: 8),
                           child: Card(
                             elevation: 0,
                             child: Row(
@@ -384,7 +408,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                   repository['node']['nameWithOwner'],
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.w500),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ],
                             ),
