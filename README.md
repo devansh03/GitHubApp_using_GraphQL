@@ -9,5 +9,5 @@ The app will look like this,
 
 When the username entered does not exist,
 
-(https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWorkingImage.png)
+(https://github.com/devansh03/GitHubApp_using_GraphQL/blob/master/AppWrongUsernameEnteredImage.png)
 
