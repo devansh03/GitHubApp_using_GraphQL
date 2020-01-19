@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/GitHubApp.iml" filepath="$PROJECT_DIR$/.idea/GitHubApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/GitHubApp_using_GraphQL.iml" filepath="$PROJECT_DIR$/.idea/GitHubApp_using_GraphQL.iml" />
     </modules>
   </component>
 </project>
