@@ -42,12 +42,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String personalAccessToken = "a023161f53615b2e5360e63511b3002a7fc28dfa";
+  
+  
+  
+  // Enter the Access Token you will get in the string.
+  String personalAccessToken = "Place Your Access Token Here";
 
   @override
   Widget build(BuildContext context) {
     final HttpLink httpLink = HttpLink(uri: 'https://api.github.com/graphql',
-        // Since this is the endpoint of the GraphQL API
         headers: {"authorization": "Bearer $personalAccessToken"});
 
     ValueNotifier<GraphQLClient> client = ValueNotifier<GraphQLClient>(
@@ -70,11 +73,13 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final TextEditingController nameController = new TextEditingController();
-  String name = "devansh03";
+  
+  
+  // In the String, enter your GitHub Username.
+  String name = "Your Username";
 
   @override
   void dispose() {
-    // Clean up the controller when the widget is disposed.
     nameController.dispose();
     super.dispose();
   }
@@ -118,10 +123,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     name = nameController.text;
                     MyHomePage();
                   });
-//              Navigator.pushReplacement(
-//                  context,
-//                  MaterialPageRoute(builder: (_) => MyHomePage()))
-//                  .then((_) => MyHomePage());
                 })
           ],
         ),
@@ -175,15 +176,10 @@ class _MyHomePageState extends State<MyHomePage> {
               ));
             }
 
-//            if (result.noSuchMethod() != null){
-//              return Text(result.hasException.toString());
-//            }
-
             if (result.loading) {
               return Center(child: CircularProgressIndicator());
             }
 
-            // it can be either Map or List
             final userDetails = result.data['user'];
             List starredRepositories =
                 result.data['viewer']['starredRepositories']['edges'];
@@ -378,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding:
                           const EdgeInsets.only(top: 10.0, bottom: 2, left: 10),
                       child: Text(
-                        "devansh03's Starred Repositories",
+                        "Your Starred Repositories",
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
